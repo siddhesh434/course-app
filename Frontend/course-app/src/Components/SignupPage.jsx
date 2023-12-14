@@ -1,12 +1,14 @@
 import { useState } from "react";
 import './SignupPage.css'
+import { useNavigate } from "react-router-dom"; // Import Navigate for redirects
 import NavBar from "./NavBar";
 export default function Signup() {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         username: "",
         email: "",
         password: "",
-        confirmedPassword: ""
+        confirmedPassword: "",
     })
 
     const handleChange = (e) => {
@@ -16,17 +18,40 @@ export default function Signup() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Handle form submission (e.g., send data to backend)
-        console.log("Form submitted:", formData);
-        // Add logic to send form data to backend server or perform necessary actions
+        console.log("hi");
+
+        fetch('http://localhost:3000/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+        })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Form data sent successfully!');
+                    navigate('/dashboard');
+                    // Add logic for successful form submission
+                } else {
+                    console.error('Failed to send form data.');
+                    // Handle error scenarios
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Handle network errors or exceptions
+            });
     };
+
+
+
 
     return (
         <div><NavBar />
             <div className="signup-form-container">
 
                 <h2>Sign up</h2>
-                <form action="" onSubmit={handleSubmit}>
+                <form >
                     <div className="form-group">
                         <div className="form-group">
                             <input
@@ -62,14 +87,17 @@ export default function Signup() {
                             <input
                                 type="password"
                                 placeholder="Confirm Password"
-                                name="confirmPassword"
-                                value={formData.confirmPassword}
+                                name="confirmedPassword"
+                                value={formData.confirmedPassword}
                                 onChange={handleChange}
                                 required
                             />
                         </div>
                     </div>
-                    <button type="submit">Sign Up</button>
+                    <p>{formData.password}</p>
+                    <p>{formData.email}</p>
+                    <p>{formData.confirmedPassword}</p>
+                    <button type="submit" onClick={handleSubmit} >Sign Up</button>
                 </form>
             </div>
         </div>

@@ -1,8 +1,13 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const bodyParser = require("body-parser");
 app.use(cors())
 
+
+const users = [];
+
+app.use(express.json())
 const courses = [{
     index: "1",
     name: 'Course Name',
@@ -33,6 +38,40 @@ const courses = [{
 app.get('/courses', (req, res) => {
     res.json(courses)
 })
+
+
+
+app.post("/signup", (req, res) => {
+    const formData = req.body;
+    if (formData.password !== formData.confirmedPassword) {
+        res.status(400).send('Password dont match')
+    }
+    users.push(formData);
+    console.log("received form data", formData);
+    res.status(200).send('Received form data successfully');
+})
+
+app.get("/users", (req, res) => {
+    res.send(users)
+})
+
+app.post('/login', (req, res) => {
+    const loginDetails = req.body;
+    console.log("hi");
+    const foundUser = users.find(user => user.username === loginDetails.username)
+    if (foundUser) {
+        if (foundUser.password === loginDetails.password) {
+            res.status(200).send("Login Successfully")
+        }
+        else {
+            res.status(400).send("Invalid Password");
+        }
+    }
+    else {
+        res.status(404).send("user not found");
+    }
+})
+
 
 app.listen(3000, () => {
     console.log("App is listening at port 3000")

@@ -16,7 +16,30 @@ export default function Signup() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Handle form submission (e.g., send data to backend)
+
+        fetch('http://localhost:3000/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+        })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Logged In Successfully');
+
+                } else {
+                    console.error('Failed to log in.');
+                }
+                return response.text();
+            }).then((data) => {
+                console.log('Server response:', data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Handle network errors or exceptions
+            });
+
         console.log("Form submitted:", formData);
         // Add logic to send form data to backend server or perform necessary actions
     };
@@ -25,7 +48,7 @@ export default function Signup() {
         <div><NavBar />
             <div className="signup-form-container">
 
-                <h2>Sign up</h2>
+                <h2>Log in</h2>
                 <form action="" onSubmit={handleSubmit}>
                     <div className="form-group">
                         <div className="form-group">
@@ -49,7 +72,7 @@ export default function Signup() {
                             />
                         </div>
                     </div>
-                    <button type="submit">Sign Up</button>
+                    <button type="submit">Log in</button>
                 </form>
             </div>
         </div>
