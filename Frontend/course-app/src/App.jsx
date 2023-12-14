@@ -1,31 +1,24 @@
 import './App.css'
+import { useState, useEffect } from "react";
 import NavBar from './Components/NavBar'
 import CourseCard from './Components/CouseCard'
 function App() {
-  const course = [{
-    index: "1",
-    name: 'Course Name',
-    price: '$99',
-    duration: '4 weeks',
-    image: 'https://blogger.googleusercontent.com/img/a/AVvXsEgDIGJ3147t9CBjq34ArVl7OxjKYtj-_jt1pEqChv5hW0c37ixRWzJbG-KSQ5QUY21rzx-ijtBpykqRspuhatM2aR4ihWdrdg-L49Eg5LmQIvhkHBx4MzaxZ2CQTY099d1_iK3PBtSCGufUEmGdK4G6LeTlguWED8BZ54KYRyNWtu6dVgF1El_Y7hgQ=w370-h400',
-    instructor: 'Instructor Name',
-  },
-  {
-    index: "1",
-    name: 'Course Name',
-    price: '$99',
-    duration: '4 weeks',
-    image: 'https://blogger.googleusercontent.com/img/a/AVvXsEgDIGJ3147t9CBjq34ArVl7OxjKYtj-_jt1pEqChv5hW0c37ixRWzJbG-KSQ5QUY21rzx-ijtBpykqRspuhatM2aR4ihWdrdg-L49Eg5LmQIvhkHBx4MzaxZ2CQTY099d1_iK3PBtSCGufUEmGdK4G6LeTlguWED8BZ54KYRyNWtu6dVgF1El_Y7hgQ=w370-h400',
-    instructor: 'Instructor Name',
-  },
-  {
-    index: "1",
-    name: 'Course Name',
-    price: '$99',
-    duration: '4 weeks',
-    image: 'https://blogger.googleusercontent.com/img/a/AVvXsEgDIGJ3147t9CBjq34ArVl7OxjKYtj-_jt1pEqChv5hW0c37ixRWzJbG-KSQ5QUY21rzx-ijtBpykqRspuhatM2aR4ihWdrdg-L49Eg5LmQIvhkHBx4MzaxZ2CQTY099d1_iK3PBtSCGufUEmGdK4G6LeTlguWED8BZ54KYRyNWtu6dVgF1El_Y7hgQ=w370-h400',
-    instructor: 'Instructor Name',
-  }];
+  const [course, setCourse] = useState([]);
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    const coursePromise = fetch("http://localhost:3000/courses");
+    console.log("hi");
+    coursePromise.then((res) => {
+      return res.json();
+    }).then((finalData) => {
+      setCourse(finalData);
+      setLoading(true);
+    }).catch(error => console.error('Error fetching courses:', error));
+  }, [])
+
+  if (!loading) {
+    return <p>Loading</p>
+  }
   return (
     <>
       <nav className='Nav-Bar'>
@@ -33,9 +26,9 @@ function App() {
         <h5 style={{ marginTop: "20px", marginLeft: "20px" }}>Available Courses</h5>
         <div className='course-card-container' style={{ display: "flex" }}>
           {
-            course.map((course, index) => {
+            course.map((courses, index) => {
               return (
-                <CourseCard key={index} {...course} />
+                <CourseCard key={index} {...courses} />
               );
             })
           }
