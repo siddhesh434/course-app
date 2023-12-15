@@ -1,8 +1,8 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Signup from "./Components/SignupPage";
 import Dashboard from "./Components/DashBoard";
-import { Navigate } from "react-router-dom"; // Import Navigate for redirects
-import LoginPage from "./Components/LoginPage"
+import LoginPage from "./Components/LoginPage";
+import UserDashBoardWrapper from "./Components/UserDashBoardWrapper";
 
 export default function App() {
   return (
@@ -11,7 +11,9 @@ export default function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/" element={<Dashboard />} />
         <Route path="/login" element={<LoginPage />} />
-        {/* Redirect to Signup page if unknown route is accessed */}
+        {/* Use a wrapper component to pass userId as a prop */}
+        <Route path="/user/:userId" element={<UserDashBoardWrapper />} />
+        {/* Redirect to Dashboard page if an unknown route is accessed */}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>

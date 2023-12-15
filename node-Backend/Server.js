@@ -5,7 +5,43 @@ const bodyParser = require("body-parser");
 app.use(cors())
 
 
-const users = [];
+const users = [{
+    id: 1,
+    username: "sid",
+    password: "sid",
+    email: "siddheshwaje@gmail.com"
+},
+{
+    id: 2,
+    username: "johndoe",
+    password: "doe123",
+    email: "johndoe@example.com"
+}
+    , {
+    id: 3,
+    username: "alice_smith",
+    password: "p@ssw0rd",
+    email: "alice.smith@email.com"
+}
+    , {
+    id: 4,
+    username: "maximus",
+    password: "gladiator",
+    email: "maximus@rome.com"
+}
+    , {
+    id: 5,
+    username: "sarah_87",
+    password: "sarah123",
+    email: "sarah87@gmail.com"
+}
+    , {
+    id: 6,
+    username: "bob_jenkins",
+    password: "p@55w0rd",
+    email: "bob.jenkins@email.com"
+}
+];
 
 app.use(express.json())
 const courses = [{
@@ -35,21 +71,39 @@ const courses = [{
 
 
 
+app.get('/users/:id', (req, res) => {
+    const userId = parseInt(req.params.id);
+    const user = users.find(user => user.id === userId);
+
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json(user);
+});
+
+
+
+
 app.get('/courses', (req, res) => {
     res.json(courses)
 })
 
 
-
+let a = 2; // Use let or var to ensure it can be modified globally
 app.post("/signup", (req, res) => {
     const formData = req.body;
     if (formData.password !== formData.confirmedPassword) {
-        res.status(400).send('Password dont match')
+        res.status(400).send('Passwords don\'t match');
+        return; // Add return to prevent further execution
     }
+    formData.id = a;
+    a++; // Increment 'a' after assigning it to formData.id
     users.push(formData);
-    console.log("received form data", formData);
+    console.log("Received form data", formData);
     res.status(200).send('Received form data successfully');
-})
+});
+
 
 app.get("/users", (req, res) => {
     res.send(users)
@@ -61,7 +115,7 @@ app.post('/login', (req, res) => {
     const foundUser = users.find(user => user.username === loginDetails.username)
     if (foundUser) {
         if (foundUser.password === loginDetails.password) {
-            res.status(200).send("Login Successfully")
+            res.status(200).send(`${foundUser.id}`)
         }
         else {
             res.status(400).send("Invalid Password");
@@ -71,6 +125,8 @@ app.post('/login', (req, res) => {
         res.status(404).send("user not found");
     }
 })
+
+
 
 
 app.listen(3000, () => {

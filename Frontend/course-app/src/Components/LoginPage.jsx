@@ -1,6 +1,9 @@
 import { useState } from "react";
 import './SignupPage.css'
 import NavBar from "./NavBar";
+import { useNavigate } from 'react-router-dom';
+
+
 export default function Signup() {
     const [formData, setFormData] = useState({
         username: "",
@@ -13,6 +16,7 @@ export default function Signup() {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
+    const navigate = useNavigate(); // Using useNavigate from React Router
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -27,13 +31,17 @@ export default function Signup() {
             .then(response => {
                 if (response.ok) {
                     console.log('Logged In Successfully');
-
+                    return response.text();
                 } else {
                     console.error('Failed to log in.');
+                    throw new Error('Login failed');
                 }
-                return response.text();
-            }).then((data) => {
+            })
+            .then(data => {
                 console.log('Server response:', data);
+                const userId = parseInt(data); // Assuming the server sends back the userId as text
+                console.log(userId);
+                navigate(`/user/${userId}`); // Redirect to the personalized user page
             })
             .catch(error => {
                 console.error('Error:', error);
